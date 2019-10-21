@@ -1,0 +1,40 @@
+@-webkit-keyframes CLOUD-MOVE {
+	from { background-position:0% 0%; }
+	to { background-position: 600% 0%; }
+}
+@keyframes CLOUD-MOVE {
+	from { background-position: 0% 0%; }
+	to { background-position: 600% 0%; }
+}
+.fx_cloud {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+.fx_cloud_background {
+	background: black url('img/background.png') repeat-x 5% 0%;
+	background-size: cover;
+	z-index: -3;
+	-webkit-animation: CLOUD-MOVE  200s linear infinite;
+	-moz-animation: CLOUD-MOVE  200s linear infinite;
+	-ms-animation: CLOUD-MOVE  200s linear infinite;
+	animation: CLOUD-MOVE  200s linear infinite;
+}
+.fx_cloud_midground {
+	background: url('img/midground.png')repeat 20% 0%;
+	z-index: -2;
+	-webkit-animation: CLOUD-MOVE  100s linear infinite;
+	-moz-animation: CLOUD-MOVE  100s linear infinite;
+	-ms-animation: CLOUD-MOVE  100s linear infinite;
+	animation: CLOUD-MOVE  100s linear infinite;
+}
+.fx_cloud_foreground {
+	background: url('img/foreground.png')repeat 35% 0%;
+	z-index: -1;
+	-webkit-animation: CLOUD-MOVE  50s linear infinite;
+	-moz-animation: CLOUD-MOVE  50s linear infinite;
+	-ms-animation: CLOUD-MOVE  50s linear infinite;
+	animation: CLOUD-MOVE  50s linear infinite;
+}

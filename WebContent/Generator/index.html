@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>代码生成器</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin: 0px;
+        }
+        .content {
+        	padding: 15px 30px;
+        }
+        .title {
+            width: 100px;
+        }
+        .column {
+           	height: 180px;
+           	border: solid 1px gray;
+           	overflow-y: scroll;
+           	overflow-x: hidden;
+        }
+        #columns {
+        	width: 100%;
+            font-size: 12px;
+            border-spacing: 5px;
+        }
+        #result {
+            width: 100%;
+            height: 100px;
+            background-color: white;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            font-size: 12px;
+            border: solid 1px gray;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <table style="width: 100%;height: 100%;">
+            <tr><td class="title">标题</td><td><input type="text" value="" name="title" style="width:100%;" placeholder="管理项名称" /></td></tr>
+            <tr><td class="title">表前缀</td><td><input type="text" value="" name="prefix" style="width:100%;" placeholder="数据库表前缀(可选)" /></td></tr>
+            <tr><td class="title">对象名</td><td><input type="text" value="" name="name" style="width:100%;" placeholder="模型名称" /></td></tr>
+            <tr><td class="title">搜索字段</td><td><input type="text" value="" name="search" style="width:100%;" placeholder="搜索字段名" /></td></tr>
+            <tr>
+                <td class="title" style="vertical-align:top;">字段列表</td>
+                <td>
+                    <div class="column">
+                        <table id="columns">
+                            <tr><th>列名</th><th>描述</th><th>类型</th><th>长度</th><th>非空</th><th>默认值</th><th>操作</th></tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <span>接口生成&nbsp;</span>
+                    <span><input type="checkbox" name="method_insert" checked="checked" />insert</span>
+                    <span><input type="checkbox" name="method_update" checked="checked" />update</span>
+                    <span><input type="checkbox" name="method_delete" checked="checked" />delete</span>
+                    <span><input type="checkbox" name="method_table" />table</span>
+                </td>
+            </tr>
+            <tr>
+                <td><button style="width:80px;" onclick="generate();">生成</button></td>
+                <td><div id="result"></div></td>
+            </tr>
+        </table>
+    </div>
+    <script src="../Application/plugins/jquery.1.12.4.min.js"></script>
+    <script>
+        function generate() {
+            var title = $('input[name=title]').val();
+            var prefix = $('input[name=prefix]').val();
+            var name = $('input[name=name]').val();
+            var search = $('input[name=search]').val();
+            var columns = [];
+            var method_insert = $('input[name=method_insert]').prop('checked');
+            var method_update = $('input[name=method_update]').prop('checked');
+            var method_delete = $('input[name=method_delete]').prop('checked');
+            var method_table = $('input[name=method_table]').prop('checked');
+            var trs = $('#columns').find('tr');
+            for (var i = 1; i < trs.length; i++) {
+                var tr = trs.eq(i);
+                var col = {};
+                col.name = tr.find('input[name=col_name]').val();
+                col.desc = tr.find('input[name=col_desc]').val();
+                col.type = tr.find('select[name=col_type]').val();
+                col.length = tr.find('input[name=col_length]').val();
+                col.null = tr.find('input[name=col_null]').prop('checked');
+                col.default = tr.find('input[name=col_default]').val();
+                if (col.length == '') col.length = '0';
+                columns.push(col);
+            }
+            $("#result").html("");
+            $.ajax({
+                url: '../Generate',
+                type: 'POST',
+                data: {
+                    title: title,
+                    prefix: prefix,
+                    name: name,
+                    search: search,
+                    column: JSON.stringify(columns),
+                    method_insert: method_insert,
+                    method_update: method_update,
+                    method_delete: method_delete,
+                    method_table: method_table
+                },
+                success: function (result) {
+                    $("#result").html(result);
+                }
+            });
+        }
+        function addColumn() {
+            var html = '<tr style="text-align:center;">';
+            html += '<td><input type="text" name="col_name" style="width:100%;"/></td>';
+            html += '<td><input type="text" name="col_desc" style="width:100%;"/></td>';
+            html += '<td><select name="col_type" style="width:100%;">';
+            html += '<option value="string">string</option>';
+            html += '<option value="int">int</option>';
+            html += '<option value="float">float</option>';
+            html += '<option value="decimal">decimal</option>';
+            html += '<option value="date">date</option>';
+            html += '<option value="datetime">datetime</option>';
+            html += '<option value="blob-img">blob[img]</option>';
+            html += '<option value="blob-file">blob[file]</option>';
+            html += '</select></td>';
+            html += '<td><input type="text" name="col_length" style="width:100%;"/></td>';
+            html += '<td><input type="checkbox" name="col_null" checked="checked"/></td>';
+            html += '<td><input type="text" name="col_default" style="width:100%;"/></td>';
+            html += '<td><button class="add">+</button><button class="del">-</button></td>';
+            html += '</tr>';
+            $("#columns").append(html);
+            $("#columns").find(".add").unbind('click').bind('click', function () {
+                addColumn();
+            });
+            $("#columns").find(".del").unbind('click').bind('click', function (e) {
+                if ($("#columns").find('tr').length > 2) {
+                    e.target.parentNode.parentNode.remove();
+                }
+            });
+        }
+        $(function () {
+            addColumn();
+        });
+    </script>
+</body>
+</html>

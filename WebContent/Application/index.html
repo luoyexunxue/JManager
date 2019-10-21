@@ -1,0 +1,241 @@
+﻿<!DOCTYPE HTML>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>管理系统</title>
+    <link href="plugins/fullPage/jquery.fullPage.css" rel="stylesheet"/>
+    <link href="plugins/bootstrap-3.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="plugins/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" />
+    <link href="plugins/material-design-iconic-font-2.2.0/css/material-design-iconic-font.min.css" rel="stylesheet"/>
+    <link href="plugins/waves-0.7.5/waves.min.css" rel="stylesheet"/>
+    <link href="plugins/custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css" rel="stylesheet"/>
+    <link href="app/css/index.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="app">
+	<div :id="system_skin">
+        <admin-header @open_tab="open_tab" @search="search" :title="system_title" :user_menus="user_menus"></admin-header>
+		<admin-main @open_tab="open_tab" :user="user" :user_menus="user_menus" :menus="menus"></admin-main>
+	</div>
+</div>
+<template id="admin-header">
+	<header id="header">
+		<ul id="menu">
+			<li id="guide" class="line-trigger">
+				<div class="line-wrap">
+					<div class="line top"></div>
+					<div class="line center"></div>
+					<div class="line bottom"></div>
+				</div>
+			</li>
+			<li id="logo" class="hidden-xs">
+				<a href="#"><img src="app/img/logo.png"/></a>
+				<span id="system_title" v-text="title">后台管理系统</span>
+			</li>
+			<li class="pull-right">
+				<ul class="hi-menu">
+					<li class="dropdown">
+						<a class="waves-effect waves-light" data-toggle="dropdown" href="javascript:;">
+							<i class="him-icon zmdi zmdi-search"></i>
+						</a>
+						<ul class="dropdown-menu dm-icon pull-right">
+							<form id="search-form" class="form-inline" @submit.prevent="search">
+								<div class="input-group">
+									<input id="keywords" type="text" :value="search_text" v-model="search_text" class="form-control" placeholder="搜索" />
+									<div class="input-group-btn">
+										<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+									</div>
+								</div>
+							</form>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a class="waves-effect waves-light" data-toggle="dropdown" href="javascript:;">
+							<i class="him-icon zmdi zmdi-more-vert"></i>
+						</a>
+						<ul class="dropdown-menu dm-icon pull-right">
+							<li class="hidden-xs">
+								<a class="waves-effect" href="javascript:fullPage();"><i class="zmdi zmdi-fullscreen"></i>全屏模式</a>
+							</li>
+							<li v-for="m in user_menus">
+                                <a v-if='m.isOpenTab' class="waves-effect" href="javascript:;" @click="open_tab(m)"><i class="zmdi" :class="m.icon"></i>{{m.title}}</a>
+								<a v-else class="waves-effect" :href="m.url"><i class="zmdi" :class="m.icon"></i>{{m.title}}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</header>
+</template>
+<template id="admin-main">
+	<section id="main">
+		<admin-sidebar @open_tab="open_tab" :user="user" :user_menus="user_menus" :menus="menus"></admin-sidebar>
+		<section id="content">
+			<div class="content_tab">
+				<div class="tab_left">
+					<a class="waves-effect waves-light" href="javascript:;"><i class="zmdi zmdi-chevron-left"></i></a>
+				</div>
+				<div class="tab_right">
+					<a class="waves-effect waves-light" href="javascript:;"><i class="zmdi zmdi-chevron-right"></i></a>
+				</div>
+				<ul id="tabs" class="tabs">
+					<li id="tab_home" data-index="home_html" data-closeable="false" class="cur">
+						<a class="waves-effect waves-light">首页</a>
+					</li>
+				</ul>
+			</div>
+			<div class="content_main">
+				<div id="iframe_home_html" class="iframe cur"></div>
+			</div>
+		</section>
+	</section>
+</template>
+<template id="admin-sidebar">
+	<aside id="sidebar">
+		<div class="s-profile">
+			<a class="waves-effect waves-light" href="javascript:;">
+				<div class="sp-pic">
+					<img :src="user.avatar"/>
+				</div>
+				<div class="sp-info">
+					{{user.name}} 您好！
+					<i class="zmdi zmdi-caret-down"></i>
+				</div>
+			</a>
+			<ul class="main-menu user-menu">
+				<li v-for="m in user_menus">
+					<a v-if='m.isOpenTab' class="waves-effect" href="javascript:;" @click="open_tab(m)"><i class="zmdi" :class="m.icon"></i>{{m.title}}</a>
+					<a v-else class="waves-effect" :href="m.url"><i class="zmdi" :class="m.icon"></i>{{m.title}}</a>
+				</li>
+			</ul>
+		</div>
+		<ul class="main-menu">
+			<template v-for="menu in menus">
+				<li v-if="menu.childer==null">
+					<a v-if='menu.isOpenTab' class="waves-effect" href="javascript:;" @click="open_tab(menu)"><i class="zmdi" :class="menu.icon"></i>{{menu.title}}</a>
+					<a v-else class="waves-effect" :href="menu.url"><i class="zmdi" :class="menu.icon"></i>{{menu.title}}</a>
+				</li>
+				<li v-else class="sub-menu system_menus " >
+					<a class="waves-effect" href="javascript:;"><i class="zmdi" :class="menu.icon"></i>{{menu.title}}</a>
+					<ul>
+						<li v-for="m in menu.childer">
+							<a v-if='m.isOpenTab' class="waves-effect" href="javascript:;" @click="open_tab(m)"><i class="zmdi" :class="m.icon"></i>{{m.title}}</a>
+							<a v-else class="waves-effect" :href="m.url"><i class="zmdi" :class="m.icon"></i>{{m.title}}</a>
+						</li>
+					</ul>
+				</li>
+			</template>
+		</ul>
+	</aside>
+</template>
+<footer id="footer"></footer>
+<script src="plugins/jquery.1.12.4.min.js"></script>
+<script src="plugins/bootstrap-3.3.0/js/bootstrap.min.js"></script>
+<script src="plugins/waves-0.7.5/waves.min.js"></script>
+<script src="plugins/custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="plugins/BootstrapMenu.min.js"></script>
+<script src="plugins/device.min.js"></script>
+<script src="plugins/fullPage/jquery.fullPage.min.js"></script>
+<script src="plugins/fullPage/jquery.jdirk.min.js"></script>
+<script src="plugins/jquery-confirm/jquery-confirm.min.js"></script>
+<script src="plugins/jquery.cookie.js"></script>
+<script src="plugins/vue.min.js"></script>
+<script src="app/js/index.js"></script>
+<script type="text/javascript">
+    Vue.component('admin-header', {
+        template: '#admin-header',
+        props: {
+            title: [String],
+            user_menus: [Array]
+        },
+        data: function () {
+            return { search_text: '' }
+        },
+        methods: {
+            search: function () { this.$emit('search', this.search_text) },
+            open_tab: function (menu) { this.$emit('open_tab', menu.title, menu.url); }
+        }
+    });
+    Vue.component('admin-main', {
+        template: '#admin-main',
+        props: {
+            user: [Object],
+            user_menus: [Array],
+            menus: [Array],
+        },
+        methods: {
+            open_tab: function (title, url) { this.$emit('open_tab', title, url); }
+        }
+    });
+	Vue.component('admin-sidebar', {
+	    template: '#admin-sidebar',
+	    props: {
+	        user: [Object],
+	        user_menus: [Array],
+	        menus: [Array]
+	    },
+	    methods: {
+	        open_tab: function (menu) { this.$emit('open_tab', menu.title, menu.url); }
+	    }
+	});
+	var app = new Vue({
+	    el: '#app',
+	    data: {
+	        system_skin: 'default-skin',
+	        system_title: '',
+	        user_menus: [
+                { title: '个人资料', icon: 'zmdi-account', url: "../Default?ticket=" + encodeURIComponent(window.ticket), isOpenTab: true },
+                { title: '退出登录', icon: 'zmdi-run', url: "javascript:logout();", isOpenTab: false }
+	        ],
+	        user: {
+	            avatar: 'app/img/white.png',
+	            name: window.username
+	        },
+	        menus: []
+	    },
+	    created: function () {
+	        var self = this;
+	        $.getJSON("data/app.json", function (data) {
+	            self.system_title = data.app_name;
+	            self.menus = data.menus;
+	        });
+	        $.ajax({
+	            url: '../api/user/item',
+	            type: 'POST',
+	            contentType: 'application/json',
+	            success: function (data) {
+	                if (data.data && data.data.avatar) self.user.avatar = "data:image/png;base64," + data.data.avatar;
+	                else self.user.avatar = 'app/img/avatar.jpg';
+	            },
+	            error: function (e) {
+	                if (e.status == 401) {
+	                    $.confirm({
+	                        title: false,
+	                        content: '请重新登录',
+	                        buttons: {
+	                            ok: {
+	                                text: "确定",
+	                                btnClass: 'btn-primary',
+	                                action: function () { logout(); }
+	                            }
+	                        }
+	                    });
+	                }
+	                self.user.avatar = 'app/img/avatar.jpg';
+	            },
+	            beforeSend: function (XHR) { XHR.setRequestHeader('Authorization', 'BasicAuth ' + window.ticket); }
+	        });
+	    },
+	    methods: {
+	        open_tab: function (title, url) { addTab(title, url); },
+	        search: function (keyword) {
+	            searchResult(keyword, this.menus);
+	        }
+	    }
+	});
+</script>
+</body>
+</html>

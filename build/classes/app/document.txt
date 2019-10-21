@@ -1,0 +1,39 @@
+﻿（一）列表项
+	1. action 列 formatter 参数为 actionFormatter1, actionFormatter2, actionFormatter3, actionFormatter4
+	   actionFormatter1 修改删除
+	   actionFormatter2 详细删除
+	   actionFormatter3 修改
+	   actionFormatter4 详细
+
+（二）工具栏
+	1. createAction 新增操作
+	2. updateAction 修改操作
+	3. detailAction 查看操作（不可修改）
+	4. deleteAction 删除操作
+	5. importAction 导入操作
+	6. exportAction 导出操作
+
+（三）对话框
+	1. createDialog 新增修改和查看操作对话框
+	2. importDialog 导入操作对话框
+	3. exportDialog 导出操作对话框
+
+（四）编辑框
+	1. name 属性为模型字段名称
+	2. url 属性支持 <id,name> 的列表数据，例：url="/api/example/table?category='1'"
+	3. param 属性和 url 属性一起使用，仅查看详情时可用，提供 url 的 POST 动态参数，例：param="{id:id}"
+	4. file 属性支持打开文件并以 base64 编码，例：file=".stl"
+	5. formatter 属性用来对值进行格式化，例：formatter="format_date"
+	6. default 属性为字段设置默认值，例：default="0"
+	7. validate 属性字段为验证规则，例：validate="required:true;"
+	   全部可用验证规则包含：required:true;tel:true;email:true;cardId:true;date:true;
+	   datetime:true;decimal:true;integer:true;url:true;minlength:6;maxlength:32;min:0;max:100;
+	8. keep 属性可以使新增的时候保留上次数据，提高录入效率
+
+（五）页面间通信
+	1. application.register 注册事件回调，可注册的事件目前包含 insert,update,delete,import
+	   可以同时监听多个事件，事件名称以逗号隔开
+	2. application.call 调用其他页面 application 中的方法
+	   其中 application 默认都包含 refresh 和 reload 方法，用来刷新页面和内部数据
+	   如需要添加自定义方法，请使用 application.mymethod = function(param) {...}
+	3. application.onevent 触发指定事件，仅内部使用
