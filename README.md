@@ -1,0 +1,1 @@
+Java curd generator
