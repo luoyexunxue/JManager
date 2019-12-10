@@ -59,4 +59,15 @@ public class Cache {
 		}
 		return null;
 	}
+
+	/**
+	 * 移除缓存项
+	 * 
+	 * @param name
+	 */
+	public static void remove(String name) {
+		if (cache != null) {
+			cache.remove(name);
+		}
+	}
 }

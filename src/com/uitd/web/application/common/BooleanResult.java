@@ -34,6 +34,19 @@ public class BooleanResult<T> {
 		this.message = message;
 	}
 
+	/**
+	 * 构造3
+	 * 
+	 * @param success
+	 * @param message
+	 * @param data
+	 */
+	public BooleanResult(boolean success, String message, T data) {
+		this.success = success;
+		this.message = message;
+		this.data = data;
+	}
+
 	public boolean isSuccess() {
 		return success;
 	}
