@@ -98,9 +98,12 @@ public class Generate extends HttpServlet {
 				int col_len = Integer.parseInt(item.get("length").toString());
 				boolean col_null = Boolean.parseBoolean(item.get("null").toString());
 				String col_def = item.get("default").toString();
+				if (col_name.toLowerCase().equals("id")) {
+					throw new Exception("column 'id' has already exists");
+				}
 				columns.add(new Columns(col_name, col_desc, col_type, col_len, col_null, col_def));
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return e.getMessage();
 		}
