@@ -13,6 +13,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.h2.util.StringUtils;
+
 public class Common {
 	/**
 	 * 格式化时间
@@ -193,5 +195,34 @@ public class Common {
 			filePath += "/";
 		}
 		return filePath.replaceAll("%20", " ");
+	}
+
+	/**
+	 * 是否合法命名
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public static boolean isNameValid(String name) {
+		if (StringUtils.isNullOrEmpty(name)) {
+			return false;
+		}
+		char firstChar = name.charAt(0);
+		if (firstChar < 65 || (firstChar > 90 && firstChar < 95) || (firstChar > 95 && firstChar < 97)
+				|| firstChar > 122) {
+			return false;
+		}
+		for (int i = 1; i < name.length(); i++) {
+			char ch = name.charAt(i);
+			if (ch < 48 || ch > 122)
+				return false;
+			if (ch > 57 && ch < 65)
+				return false;
+			if (ch > 90 && ch < 95)
+				return false;
+			if (ch > 95 && ch < 97)
+				return false;
+		}
+		return true;
 	}
 }

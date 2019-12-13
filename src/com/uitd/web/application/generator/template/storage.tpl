@@ -36,7 +36,7 @@ public interface {{name}}DAL {
 	 * @param id
 	 * @return
 	 */
-	public {{name}} item(String id);
+	public {{name}} select(String id);
 
 	/**
 	 * 获取列表项
@@ -44,7 +44,7 @@ public interface {{name}}DAL {
 	 * @param filter
 	 * @return
 	 */
-	public List<{{name}}> list(String filter);
+	public List<{{name}}> list({{name}} filter);
 
 	/**
 	 * 分页获取列表

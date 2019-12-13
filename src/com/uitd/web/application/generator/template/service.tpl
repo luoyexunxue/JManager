@@ -59,8 +59,8 @@ public class {{name}}Service {
 	 * @param id
 	 * @return
 	 */
-	public {{name}} item(String id) {
-		return dal.item(id);
+	public {{name}} select(String id) {
+		return dal.select(id);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class {{name}}Service {
 	 * @param filter
 	 * @return
 	 */
-	public List<{{name}}> list(String filter) {
+	public List<{{name}}> list({{name}} filter) {
 		return dal.list(filter);
 	}
 
@@ -89,7 +89,7 @@ public class {{name}}Service {
 		param.put("limit", limit);
 		param.put("sort", sort);
 		param.put("order", order);
-		param.put("search", search);
+		param.put("{{search}}", search);
 		ListResult<{{name}}> result = new ListResult<{{name}}>();
 		result.setRows(dal.page(param));
 		result.setTotal(dal.page_count(param));

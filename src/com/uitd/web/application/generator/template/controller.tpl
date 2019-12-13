@@ -140,16 +140,15 @@ public class {{name}}Controller extends WebApiController {
 	{{#if table}}
 
 	/**
-	 * 全部列表项
+	 * 列表项
 	 * 
 	 * @param param
 	 * @return
 	 */
 	@POST
 	@Path("table")
-	public List<{{name}}> table(@RequestBody Map<String, Object> param) {
-		String filter = (String) param.get("filter");
-		return service.list(filter);
+	public List<{{name}}> table(@RequestBody {{name}} param) {
+		return service.list(param);
 	}
 	{{#if}}
 }

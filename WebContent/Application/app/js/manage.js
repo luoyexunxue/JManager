@@ -65,7 +65,8 @@
     window.actionEvents = {
         'click .edit': function (e, value, row, index) { updateAction([row]); },
         'click .remove': function (e, value, row, index) { deleteAction([row]); },
-        'click .detail': function (e, value, row, index) { detailAction([row]); }
+        'click .detail': function (e, value, row, index) { detailAction([row]); },
+        'click .custom': function (e, value, row, index) { customAction([row]); }
     };
     window.application.refresh = function () {
         $('#table').bootstrapTable('refresh');
@@ -73,8 +74,15 @@
     window.application.reload = function () {
         $('#createDialog,#exportDialog,#importDialog').find('select[url]').each(function (i, e) {
             var url = $(e).attr("url");
-            var filter = url.indexOf('?') > 0 ? url.substr(url.indexOf('?') + 1) : null;
-            actionRequest(url, { filter: filter }, function (json) {
+            var filter = {};
+            if (url.indexOf('?') > 0) {
+            	var params = url.substr(url.indexOf('?') + 1).split('&');
+            	for (var i = 0; i < params.length; i++) {
+            		var idx = params[i].indexOf('=');
+            		filter[params[i].substring(0, idx)] = params[i].substring(idx + 1);
+            	}
+            }
+            actionRequest(url, filter, function (json) {
                 var html = '<option value=""></option>';
                 for (var i = 0; i < json.length; i++) {
                     html += '<option value="' + json[i].id + '">' + json[i].name + '</option>';

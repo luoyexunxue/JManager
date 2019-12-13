@@ -20,7 +20,7 @@
 
 （四）编辑框
 	1. name 属性为模型字段名称
-	2. url 属性支持 <id,name> 的列表数据，例：url="/api/example/table?category='1'"
+	2. url 属性支持 <id,name> 的列表数据，例：url="/api/example/table?category=other"
 	3. param 属性和 url 属性一起使用，仅查看详情时可用，提供 url 的 POST 动态参数，例：param="{id:id}"
 	4. file 属性支持打开文件并以 base64 编码，例：file=".stl"
 	5. formatter 属性用来对值进行格式化，例：formatter="format_date"

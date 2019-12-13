@@ -25,21 +25,26 @@
 		DELETE FROM {{prefix}}_{{nameL}} WHERE id IN
 		<foreach item="id" index="index" collection="array" open="(" separator="," close=")">#{id}</foreach>
 	</delete>
-	<select id="item" parameterType="java.lang.String" resultType="{{package}}.model.{{name}}">
+	<select id="select" parameterType="java.lang.String" resultType="{{package}}.model.{{name}}">
 		SELECT T.* FROM {{prefix}}_{{nameL}} T WHERE T.id=#{value}
 	</select>
-	<select id="list" parameterType="java.lang.String" resultType="{{package}}.model.{{name}}">
+	<sql id="condition">
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="{{search}} != null and {{search}} != ''">AND T.{{search}} LIKE CONCAT('%', #{{{search}}}, '%')</if>
+		</trim>
+	</sql>
+	<select id="list" parameterType="{{package}}.model.{{name}}" resultType="{{package}}.model.{{name}}">
 		SELECT T.* FROM {{prefix}}_{{nameL}} T
-		<if test="filter != null and filter != ''">WHERE ${value}</if>
+		<include refid="condition" />
 	</select>
 	<select id="page" parameterType="java.util.Map" resultType="{{package}}.model.{{name}}">
 		SELECT T.* FROM {{prefix}}_{{nameL}} T
-		<if test="search != null and search != ''">WHERE T.{{search}} LIKE CONCAT('%', #{search}, '%')</if>
+		<include refid="condition" />
 		<if test="sort != null and sort != ''">ORDER BY ${sort} ${order}</if>
 		LIMIT #{offset},#{limit};
 	</select>
 	<select id="page_count" parameterType="java.util.Map" resultType="java.lang.Integer">
 		SELECT COUNT(1) FROM {{prefix}}_{{nameL}} T
-		<if test="search != null and search != ''">WHERE T.{{search}} LIKE CONCAT('%', #{search}, '%')</if>
+		<include refid="condition" />
 	</select>
 </mapper>

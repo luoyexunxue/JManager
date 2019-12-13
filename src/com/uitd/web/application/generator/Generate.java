@@ -82,8 +82,8 @@ public class Generate extends HttpServlet {
 		boolean method_update = Boolean.parseBoolean(param.get("method_update"));
 		boolean method_delete = Boolean.parseBoolean(param.get("method_delete"));
 		boolean method_table = Boolean.parseBoolean(param.get("method_table"));
-		if (StringUtils.isEmpty(name)) {
-			return "参数错误!";
+		if (!Common.isNameValid(name)) {
+			return "对象名称错误!";
 		}
 		name = Common.uppercaseFirst(name);
 		List<Columns> columns = new ArrayList<Columns>();
