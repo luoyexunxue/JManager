@@ -20,4 +20,4 @@ create table sys_login (
 	success boolean default false,
 	primary key (id)
 );
-insert into sys_user(id,username,password,name) values('f47073d84c224ab68b7e428b0149d0cb','admin','8D969EEF6ECAD3C29A3A629280E686CF0C3F5D5A86AFF3CA12020C923ADC6C92','管理员');
+insert into sys_user(id,username,password,name) values('f47073d84c224ab68b7e428b0149d0cb','admin','AC0E7D037817094E9E0B4441F9BAE3209D67B02FA484917065F71B16109A1A78','管理员');

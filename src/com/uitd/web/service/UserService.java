@@ -66,13 +66,13 @@ public class UserService {
 		if (history.getTotal() >= 3 && history.getRows().get(0).isSuccess() == false
 				&& history.getRows().get(1).isSuccess() == false && history.getRows().get(2).isSuccess() == false
 				&& new Date().getTime() - 60000 < Common.getDate(history.getRows().get(0).getTime(), null).getTime()) {
-			return new BooleanResult<String>(false, "您已多次输入错误密码，请一分钟之后再试！");
+			return new BooleanResult<String>(false, "您已多次输入错误密码，请在一分钟之后重试！");
 		}
 		IPRegion region = AddrHelper.getRegion(login.getIp());
 		login.setUser(model);
 		login.setAddress(region != null ? region.getAddress() : (login.getIp().equals("::1") ? "本机" : "未知区域"));
 		login.setIsp(region != null ? region.getIsp() : (login.getIp().equals("::1") ? "本机" : "未知"));
-		String encrypt = Common.sha256(password);
+		String encrypt = Common.sha256(username + password);
 		if (model.getPassword().equals(encrypt)) {
 			result = new BooleanResult<String>(true, "登录成功");
 			result.setData(WebApiAuthFilter.encryptString(model.getId() + "&" + model.getPassword() + "&"
@@ -101,10 +101,10 @@ public class UserService {
 		User model = dal.item(param);
 		if (model == null)
 			return new BooleanResult<String>(false, "用户不存在");
-		String encrypt = Common.sha256(password);
+		String encrypt = Common.sha256(username + password);
 		if (!model.getPassword().equals(encrypt))
 			return new BooleanResult<String>(false, "用户名或密码错误");
-		model.setPassword(Common.sha256(newpwd));
+		model.setPassword(Common.sha256(username + newpwd));
 		if (dal.update(model) > 0) {
 			BooleanResult<String> result = new BooleanResult<String>(true, "修改成功，请重新登录");
 			result.setData(WebApiAuthFilter.encryptString(

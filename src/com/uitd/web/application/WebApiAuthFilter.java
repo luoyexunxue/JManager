@@ -28,6 +28,10 @@ public class WebApiAuthFilter implements ContainerRequestFilter {
 	private static Cipher encryptTransform = null;
 	private static Cipher decryptTransform = null;
 	private static Object mutex = new Object();
+	/**
+	 * AES密钥
+	 */
+	private static final String AESKey = "JManager#2020zrf";
 
 	/**
 	 * 加密字符串
@@ -38,7 +42,7 @@ public class WebApiAuthFilter implements ContainerRequestFilter {
 	public static String encryptString(String message) {
 		synchronized (mutex) {
 			if (encryptTransform == null) {
-				byte[] key = "ZManager#2018zrf".getBytes();
+				byte[] key = AESKey.getBytes();
 				SecretKeySpec rfc = new SecretKeySpec(key, "AES");
 				try {
 					encryptTransform = Cipher.getInstance("AES/ECB/PKCS5Padding");
@@ -66,7 +70,7 @@ public class WebApiAuthFilter implements ContainerRequestFilter {
 	public static String decryptString(String secret) {
 		synchronized (mutex) {
 			if (decryptTransform == null) {
-				byte[] key = "ZManager#2018zrf".getBytes();
+				byte[] key = AESKey.getBytes();
 				SecretKeySpec rfc = new SecretKeySpec(key, "AES");
 				try {
 					decryptTransform = Cipher.getInstance("AES/ECB/PKCS5Padding");
