@@ -3,7 +3,7 @@ package com.uitd.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -16,18 +16,19 @@ public class HTTP {
 	 * @return
 	 */
 	public static String httpPost(String url, String param) {
-		PrintWriter out = null;
+		OutputStream out = null;
 		BufferedReader in = null;
 		StringBuffer result = new StringBuffer();
 		try {
 			URLConnection conn = new URL(url).openConnection();
 			conn.setRequestProperty("accept", "application/json");
+			conn.setRequestProperty("charset", "utf-8");
 			conn.setRequestProperty("connection", "Keep-Alive");
 			conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
-			out = new PrintWriter(conn.getOutputStream());
-			out.print(param);
+			out = conn.getOutputStream();
+			out.write(param.getBytes("utf-8"));
 			out.flush();
 			in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String line;
