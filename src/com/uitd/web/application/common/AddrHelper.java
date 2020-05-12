@@ -9,12 +9,12 @@ import java.util.List;
 
 public class AddrHelper {
 	/**
-	 * 地址列表
+	 * 鍦板潃鍒楄〃
 	 */
 	private static List<IPRegion> RelationMap = null;
 
 	/**
-	 * 通过IP获取地理位置
+	 * 閫氳繃IP鑾峰彇鍦扮悊浣嶇疆
 	 * 
 	 * @param ip
 	 * @return
@@ -36,6 +36,7 @@ public class AddrHelper {
 					item.setIsp(str[4]);
 					RelationMap.add(item);
 				}
+				reader.close();
 			} catch (NumberFormatException | IOException e) {
 				e.printStackTrace();
 			}
@@ -58,12 +59,12 @@ public class AddrHelper {
 	}
 
 	/**
-	 * 快速查找IP地理位置
+	 * 蹇�熸煡鎵綢P鍦扮悊浣嶇疆
 	 * 
 	 * @param ip
 	 * @param beginIndex
 	 * @param endIndex
-	 *            不包含
+	 *            涓嶅寘鍚�
 	 * @return
 	 */
 	private static IPRegion find(long ip, int beginIndex, int endIndex) {
