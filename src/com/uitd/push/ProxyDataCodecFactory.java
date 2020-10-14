@@ -67,14 +67,13 @@ public class ProxyDataCodecFactory implements ProtocolCodecFactory {
 			if (in.remaining() < 4) {
 				return false;
 			}
-			int position = in.position();
 			int length = in.getInt();
 			if (length > in.remaining()) {
-				in.position(position);
+				in.position(in.position() - 5);
 				return false;
 			}
 			if (length < 88) {
-				in.clear();
+				in.sweep();
 				return false;
 			}
 			byte[] source = new byte[32];
