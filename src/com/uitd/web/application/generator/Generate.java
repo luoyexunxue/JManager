@@ -111,7 +111,7 @@ public class Generate extends HttpServlet {
 		boolean success1 = generateSQL(name, columns, prefix, context);
 		boolean success2 = generateModel(name, columns);
 		boolean success3 = generateController(name, columns, method_insert, method_update, method_delete, method_table);
-		boolean success4 = generateService(name, columns);
+		boolean success4 = generateService(name, columns, search);
 		boolean success5 = generateStorage(name, columns, prefix);
 		boolean success6 = generateMapper(name, columns, prefix, search);
 		boolean success7 = generateHTML(name, columns, title, method_insert, method_update, method_delete);
@@ -294,12 +294,14 @@ public class Generate extends HttpServlet {
 	 * 
 	 * @param name
 	 * @param columns
+	 * @param search
 	 * @return
 	 */
-	private boolean generateService(String name, List<Columns> columns) {
+	private boolean generateService(String name, List<Columns> columns, String search) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("package", Namespace);
 		param.put("name", name);
+		param.put("search", search);
 		String template = Common.readString(Common.getClassPath(this.getClass()) + "template/service.tpl");
 		String source = new TemplateEngine().execute(template, param);
 		if (source == null)
@@ -318,7 +320,6 @@ public class Generate extends HttpServlet {
 	 * @param name
 	 * @param columns
 	 * @param prefix
-	 * @param search
 	 * @return
 	 */
 	private boolean generateStorage(String name, List<Columns> columns, String prefix) {
@@ -343,6 +344,7 @@ public class Generate extends HttpServlet {
 	 * @param name
 	 * @param columns
 	 * @param prefix
+	 * @param search
 	 * @return
 	 */
 	private boolean generateMapper(String name, List<Columns> columns, String prefix, String search) {

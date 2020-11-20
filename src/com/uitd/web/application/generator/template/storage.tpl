@@ -25,7 +25,7 @@ public interface {{name}}DAL {
 	/**
 	 * 删除
 	 * 
-	 * @param model
+	 * @param ids
 	 * @return
 	 */
 	public boolean delete(String[] ids);
