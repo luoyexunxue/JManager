@@ -1,4 +1,4 @@
-package com.uitd.web.service;
+package com.uitd.web.service.sys;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -23,9 +23,9 @@ import com.uitd.web.application.common.AddrHelper;
 import com.uitd.web.application.common.BooleanResult;
 import com.uitd.web.application.common.IPRegion;
 import com.uitd.web.application.common.ListResult;
-import com.uitd.web.model.Login;
-import com.uitd.web.model.User;
-import com.uitd.web.storage.UserDAL;
+import com.uitd.web.model.sys.Login;
+import com.uitd.web.model.sys.User;
+import com.uitd.web.storage.sys.UserDAL;
 
 @Component
 public class UserService {
@@ -65,6 +65,7 @@ public class UserService {
 		ListResult<Login> history = history(model.getId(), 3);
 		if (history.getTotal() >= 3 && history.getRows().get(0).isSuccess() == false
 				&& history.getRows().get(1).isSuccess() == false && history.getRows().get(2).isSuccess() == false
+				&& history.getRows().get(0).getIp().equals(login.getIp())
 				&& new Date().getTime() - 60000 < Common.getDate(history.getRows().get(0).getTime(), null).getTime()) {
 			return new BooleanResult<String>(false, "您已多次输入错误密码，请在一分钟之后重试！");
 		}

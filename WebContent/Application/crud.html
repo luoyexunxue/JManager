@@ -1,0 +1,59 @@
+﻿<!DOCTYPE HTML>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>通用增删改查模板</title>
+    <script src="app/js/crud.js"></script>
+    <script>
+        window.tableParam = {
+            url: '../api/example/',
+            columns: [
+                { field: 'state', checkbox: true },
+                { field: 'id', title: 'ID', halign: 'center', visible: false },
+                { field: 'name', title: '姓名', sortable: true, halign: 'left' },
+                { field: 'tel', title: '手机号', sortable: true, halign: 'center', align: 'center' },
+                { field: 'cardId', title: '身份证号', sortable: true, halign: 'center', align: 'center' },
+                { field: 'address', title: '家庭住址', sortable: true, halign: 'left' },
+                { field: 'birthday', title: '出生日期', sortable: true, halign: 'center', align: 'center' },
+                { field: 'action', title: '操作', halign: 'center', align: 'center', events: 'actionEvents', width: 64, formatter: 'actionFormatter1' }
+            ]
+        };
+    </script>
+</head>
+<body>
+    <div id="main">
+        <div id="toolbar">
+            <a class="waves-effect waves-button" href="javascript:;" onclick="createAction()"><i class="zmdi zmdi-plus"></i>新增</a>
+            <a class="waves-effect waves-button" href="javascript:;" onclick="updateAction()"><i class="zmdi zmdi-edit"></i>编辑</a>
+            <a class="waves-effect waves-button" href="javascript:;" onclick="deleteAction()"><i class="zmdi zmdi-close"></i>删除</a>
+        </div>
+        <table id="table"></table>
+    </div>
+    <div id="createDialog" class="crudDialog" hidden>
+        <form>
+            <div class="form-group">
+                <label for="input1">姓名</label>
+                <input id="input1" type="text" class="form-control" name="name" validate="required:true;" />
+            </div>
+            <div class="form-group">
+                <label for="input2">手机号</label>
+                <input id="input2" type="text" class="form-control" name="tel" validate="required:true;tel:true;" />
+            </div>
+            <div class="form-group">
+                <label for="input3">身份证</label>
+                <input id="input3" type="text" class="form-control" name="cardId" validate="required:true;cardId:true;" />
+            </div>
+            <div class="form-group">
+                <label for="input4">住址</label>
+                <input id="input4" type="text" class="form-control" name="address" />
+            </div>
+            <div class ="form-group">
+                <label for="input5">出生日期</label>
+                <input id="input5" type="text" class="form-control" name="birthday" validate="date:true;" />
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,10 +1,10 @@
-package com.uitd.web.storage;
+package com.uitd.web.storage.sys;
 
 import java.util.List;
 import java.util.Map;
 
-import com.uitd.web.model.Login;
-import com.uitd.web.model.User;
+import com.uitd.web.model.sys.Login;
+import com.uitd.web.model.sys.User;
 
 public interface UserDAL {
 	/**

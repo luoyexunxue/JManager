@@ -1,4 +1,4 @@
-package com.uitd.web.model;
+package com.uitd.web.model.sys;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

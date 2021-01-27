@@ -3,7 +3,7 @@ img {vertical-align: middle;}
 a, a:hover, a:active, a:focus {text-decoration: none; -webkit-user-drag: none;}
 a i{font-size: 13px;}
 
-body{background:#ECECEC;}
+body{background:#FFFFFF;}
 #login-window{position:relative;top:50%;left:50%;width:400px;height:260px;margin-left:-200px;margin-top:-130px;padding:35px 55px 35px 25px;z-index:10;background:#fff;box-shadow:0 1px 11px rgba(0,0,0,.27);border-radius:8px;}
 .sys-title{font-size:28px;text-align:center;}
 .m-b-20{margin-bottom:15px !important;}

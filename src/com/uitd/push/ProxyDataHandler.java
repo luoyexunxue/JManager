@@ -74,7 +74,7 @@ public class ProxyDataHandler extends IoHandlerAdapter {
 		response.setId(request.getId());
 		response.setCommand(Command.REPLY);
 		response.setControl(0);
-		response.setExpired(60);
+		response.setExpired(0);
 		response.setTimestamp(System.currentTimeMillis());
 		response.setSource("0");
 		response.setTarget(request.getSource());
@@ -103,7 +103,7 @@ public class ProxyDataHandler extends IoHandlerAdapter {
 		response.setId(request.getId());
 		response.setCommand(Command.REPLY);
 		response.setControl(0);
-		response.setExpired(60);
+		response.setExpired(0);
 		response.setTimestamp(System.currentTimeMillis());
 		response.setSource("0");
 		response.setTarget(request.getSource());

@@ -22,9 +22,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.uitd.util.Common;
 import com.uitd.web.application.WebApiAuthFilter;
 import com.uitd.web.application.common.ListResult;
-import com.uitd.web.model.Login;
-import com.uitd.web.model.User;
-import com.uitd.web.service.UserService;
+import com.uitd.web.model.sys.Login;
+import com.uitd.web.model.sys.User;
+import com.uitd.web.service.sys.UserService;
 
 @WebServlet("/Default")
 public class Default extends HttpServlet {

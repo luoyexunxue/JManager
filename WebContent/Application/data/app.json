@@ -1,14 +1,19 @@
-{
-  "app_name" : "管理系统",
-  "background" : "stars",
-  "menus" : [ {
-    "title" : "首页",
-    "icon" : "zmdi-home",
-    "url" : "home",
-    "isOpenTab" : true
-  }, {
-    "title" : "系统管理",
-    "icon" : "zmdi-accounts-list",
-    "childer" : []
-  } ]
+﻿{
+    "app_name": "管理系统",
+    "background": "ribbon",
+    "menus": [
+        {
+            "title": "首页",
+            "icon": "zmdi-home",
+            "url": "home",
+            "isOpenTab": true
+        },
+        {
+            "title": "系统管理",
+            "icon": "zmdi-accounts-list",
+            "childer": [
+                { "title": "示例", "icon": "zmdi-star", "url": "crud.html", "isOpenTab": true }
+            ]
+        }
+    ]
 }
