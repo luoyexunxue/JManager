@@ -68,7 +68,7 @@ public class UserController extends WebApiController {
 		login.setId(UUID.randomUUID().toString().replace("-", ""));
 		login.setIp(getAddress(request));
 		login.setPlatform(getBrowser(request));
-		login.setTime(Common.toString(new Date(), "yyyy-MM-dd HH:mm:ss"));
+		login.setCreatetime(Common.toString(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		login.setSuccess(false);
 		return service.login(username, password, login);
 	}

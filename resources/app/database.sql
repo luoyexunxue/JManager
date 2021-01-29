@@ -11,18 +11,19 @@ create table sys_user (
 drop table if exists sys_login;
 create table sys_login (
 	id varchar(32) not null,
-	user varchar(32) not null,
+	userid varchar(32) not null,
 	ip varchar(16) default null,
 	address varchar(64) default null,
 	isp varchar(64) default null,
 	platform varchar(64) default null,
-	time datetime not null,
+	createtime datetime not null,
 	success boolean default false,
 	primary key (id)
 );
 drop table if exists sys_message;
 create table sys_message (
 	id varchar(32) not null unique,
+	createtime datetime not null,
 	message_id int not null,
 	message_command int not null,
 	message_control int not null,

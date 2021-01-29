@@ -65,8 +65,8 @@ public class UserService {
 		ListResult<Login> history = history(model.getId(), 3);
 		if (history.getTotal() >= 3 && history.getRows().get(0).isSuccess() == false
 				&& history.getRows().get(1).isSuccess() == false && history.getRows().get(2).isSuccess() == false
-				&& history.getRows().get(0).getIp().equals(login.getIp())
-				&& new Date().getTime() - 60000 < Common.getDate(history.getRows().get(0).getTime(), null).getTime()) {
+				&& history.getRows().get(0).getIp().equals(login.getIp()) && new Date().getTime() - 60000 < Common
+						.getDate(history.getRows().get(0).getCreatetime(), null).getTime()) {
 			return new BooleanResult<String>(false, "您已多次输入错误密码，请在一分钟之后重试！");
 		}
 		IPRegion region = AddrHelper.getRegion(login.getIp());

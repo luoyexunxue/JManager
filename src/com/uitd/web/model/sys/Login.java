@@ -10,7 +10,7 @@ public class Login {
 	private String address;
 	private String isp;
 	private String platform;
-	private String time;
+	private String createtime;
 	private boolean success;
 
 	public String getId() {
@@ -61,12 +61,12 @@ public class Login {
 		this.platform = platform;
 	}
 
-	public String getTime() {
-		return time;
+	public String getCreatetime() {
+		return createtime;
 	}
 
-	public void setTime(String time) {
-		this.time = time;
+	public void setCreatetime(String createtime) {
+		this.createtime = createtime;
 	}
 
 	public boolean isSuccess() {

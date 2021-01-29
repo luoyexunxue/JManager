@@ -13,11 +13,11 @@
 		UPDATE sys_user SET password=#{password},name=#{name},tel=#{tel},avatar=#{avatar} WHERE id=#{id}
 	</update>
 	<insert id="insertHistory" parameterType="com.uitd.web.model.sys.Login">
-		INSERT INTO sys_login(id,user,ip,address,isp,platform,time,success)
-		VALUES(#{id},#{user.id},#{ip},#{address},#{isp},#{platform},#{time},#{success})
+		INSERT INTO sys_login(id,user,ip,address,isp,platform,createtime,success)
+		VALUES(#{id},#{user.id},#{ip},#{address},#{isp},#{platform},#{createtime},#{success})
 	</insert>
 	<select id="pageHistory" parameterType="java.util.Map" resultType="com.uitd.web.model.sys.Login">
-		SELECT T.* FROM sys_login T WHERE T.user=#{id} ORDER BY T.time DESC LIMIT #{limit}
+		SELECT T.* FROM sys_login T WHERE T.user=#{id} ORDER BY T.create_time DESC LIMIT #{limit}
 	</select>
 	<select id="pageHistory_count" parameterType="java.util.Map" resultType="java.lang.Integer">
 		SELECT COUNT(1) FROM sys_login T WHERE T.user=#{id}

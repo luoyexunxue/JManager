@@ -1,17 +1,18 @@
 package com.uitd.web.service.sys;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.uitd.push.IProxyStorage;
 import com.uitd.push.ProxyData;
+import com.uitd.util.Common;
 import com.uitd.web.model.sys.Message;
 import com.uitd.web.storage.sys.MessageDAL;
 
@@ -24,10 +25,11 @@ public class MessageService implements IProxyStorage {
 	 * 新增
 	 */
 	@Override
-	public void insert(String id, ProxyData data) {
+	public void put(ProxyData data) {
 		try {
 			Message model = new Message();
-			model.setId(id);
+			model.setId(UUID.randomUUID().toString().replace("-", ""));
+			model.setCreatetime(Common.toString(new Date(), null));
 			model.setMessage_id(data.getId());
 			model.setMessage_command(data.getCommand());
 			model.setMessage_control(data.getControl());
@@ -43,32 +45,16 @@ public class MessageService implements IProxyStorage {
 	}
 
 	/**
-	 * 删除
-	 */
-	@Override
-	public void delete(String id) {
-		dal.delete(new String[] { id });
-	}
-
-	/**
-	 * 批量删除
-	 */
-	@Override
-	public void delete(String[] ids) {
-		if (ids.length > 0) {
-			dal.delete(ids);
-		}
-	}
-
-	/**
 	 * 获取
 	 */
 	@Override
-	public List<Pair<String, ProxyData>> list(String id, int limit) {
+	public List<ProxyData> get(String id, String time, int limit) {
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("message_target", id);
+		param.put("createtime", time);
 		param.put("limit", limit);
-		List<Pair<String, ProxyData>> result = new ArrayList<Pair<String, ProxyData>>();
+		param.put("message_target", id);
+		List<String> deleted = new ArrayList<String>();
+		List<ProxyData> result = new ArrayList<ProxyData>();
 		List<Message> list = dal.list(param);
 		for (int i = 0; i < list.size(); i++) {
 			try {
@@ -82,10 +68,14 @@ public class MessageService implements IProxyStorage {
 				data.setSource(item.getMessage_source());
 				data.setTarget(item.getMessage_target());
 				data.setData(new String(item.getMessage_data(), "utf-8"));
-				result.add(new ImmutablePair<String, ProxyData>(item.getId(), data));
+				deleted.add(item.getId());
+				result.add(data);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
+		}
+		if (deleted.size() > 0) {
+			dal.delete(deleted.toArray(new String[0]));
 		}
 		return result;
 	}

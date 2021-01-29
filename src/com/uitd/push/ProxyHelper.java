@@ -1,16 +1,14 @@
 package com.uitd.push;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.mina.core.future.IoFuture;
 import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.future.WriteFuture;
@@ -18,21 +16,26 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
+import com.uitd.util.Common;
+
 public class ProxyHelper implements IoFutureListener<WriteFuture> {
 	private IProxyStorage storage = null;
 	private NioSocketAcceptor acceptor = null;
-	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-	private Map<String, IoSession> sessions = new HashMap<String, IoSession>();
-	private Map<IoFuture, String> futures = new ConcurrentHashMap<IoFuture, String>();
+	private ReentrantReadWriteLock lock = null;
+	private Map<String, IoSession> sessions = null;
+	private Map<IoFuture, ProxyData> futures = null;
 
 	/**
 	 * 默认构造函数
 	 */
 	public ProxyHelper(IProxyStorage storage) {
 		this.storage = storage;
-		ResourceBundle resource = ResourceBundle.getBundle("config/configure");
-		int port = Integer.parseInt(resource.getString("push.port"));
+		lock = new ReentrantReadWriteLock();
+		sessions = new HashMap<String, IoSession>();
+		futures = new ConcurrentHashMap<IoFuture, ProxyData>();
 		try {
+			ResourceBundle resource = ResourceBundle.getBundle("config/configure");
+			int port = Integer.parseInt(resource.getString("push.port"));
 			acceptor = new NioSocketAcceptor();
 			acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ProxyDataCodecFactory()));
 			acceptor.setHandler(new ProxyDataHandler(this));
@@ -104,19 +107,33 @@ public class ProxyHelper implements IoFutureListener<WriteFuture> {
 		lock.readLock().lock();
 		IoSession session = sessions.get(data.getTarget());
 		lock.readLock().unlock();
-		String id = null;
-		if (data.getExpired() > 0) {
-			id = UUID.randomUUID().toString().replace("-", "");
-			storage.insert(id, data);
-		}
 		if (session != null && session.isConnected()) {
 			session.resumeWrite();
 			WriteFuture future = session.write(data);
-			futures.put(future, id);
-			future.addListener(this);
+			if (data.getExpired() > 0) {
+				futures.put(future, data);
+				future.addListener(this);
+			}
 			return true;
+		} else if (data.getExpired() > 0) {
+			storage.put(data);
 		}
 		return false;
+	}
+
+	/**
+	 * 发送操作完成
+	 * 
+	 * @param future
+	 */
+	@Override
+	public void operationComplete(WriteFuture future) {
+		if (futures.containsKey(future)) {
+			if (!future.isWritten()) {
+				storage.put(futures.get(future));
+			}
+			futures.remove(future);
+		}
 	}
 
 	/**
@@ -125,59 +142,34 @@ public class ProxyHelper implements IoFutureListener<WriteFuture> {
 	 * @param session
 	 */
 	private void sendCachedMessage(IoSession session) {
-		long timestamp = System.currentTimeMillis();
-		List<String> invalid = new ArrayList<String>();
-		String id = (String) session.getAttribute("id");
-		List<Pair<String, ProxyData>> list = storage.list(id, 100);
-		for (int i = 0; i < list.size(); i++) {
-			ProxyData message = list.get(i).getValue();
-			if (!checkMessage(timestamp, message)) {
-				invalid.add(list.get(i).getKey());
-				continue;
-			}
-			session.resumeWrite();
-			WriteFuture future = session.write(message);
-			futures.put(future, list.get(i).getKey());
-			future.addListener(this);
-		}
-		while (list.size() == 100) {
-			list = storage.list(id, 100);
+		final int limit = 100;
+		String time = Common.toString(new Date(), null);
+		String target = (String) session.getAttribute("id");
+		while (true) {
+			List<ProxyData> list = storage.get(target, time, limit);
 			for (int i = 0; i < list.size(); i++) {
-				ProxyData message = list.get(i).getValue();
-				if (!checkMessage(timestamp, message)) {
-					invalid.add(list.get(i).getKey());
-					continue;
+				ProxyData data = list.get(i);
+				if (checkMessage(data)) {
+					session.resumeWrite();
+					WriteFuture future = session.write(data);
+					futures.put(future, data);
+					future.addListener(this);
 				}
-				session.resumeWrite();
-				WriteFuture future = session.write(message);
-				futures.put(future, list.get(i).getKey());
-				future.addListener(this);
+			}
+			if (list.size() != limit) {
+				break;
 			}
 		}
-		storage.delete(invalid.toArray(new String[0]));
 	}
 
 	/**
-	 * 检测消息是否合理
+	 * 检测消息是否有效
 	 * 
-	 * @param timestamp
 	 * @param message
 	 * @return
 	 */
-	private boolean checkMessage(long timestamp, ProxyData message) {
+	private boolean checkMessage(ProxyData message) {
+		long timestamp = System.currentTimeMillis();
 		return timestamp < message.getExpired() * 1000 + message.getTimestamp();
-	}
-
-	/**
-	 * 发送操作完成
-	 */
-	@Override
-	public void operationComplete(WriteFuture future) {
-		if (future.isWritten() && futures.containsKey(future)) {
-			String id = futures.get(future);
-			if (id != null) {
-				storage.delete(id);
-			}
-		}
 	}
 }

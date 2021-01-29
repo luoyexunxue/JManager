@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Message {
 	private String id;
+	private String createtime;
 	private int message_id;
 	private int message_command;
 	private int message_control;
@@ -20,6 +21,14 @@ public class Message {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(String createtime) {
+		this.createtime = createtime;
 	}
 
 	public int getMessage_id() {
